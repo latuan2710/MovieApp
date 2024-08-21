@@ -1,0 +1,28 @@
+
+Phim & Tập Phim
+Thông tin Phim & Danh sách tập phim:
+  https://ophim1.com/phim/{Slug Movie}
+Ví dụ: https://ophim1.com/phim/khi-anh-chay-ve-phia-em
+
+Các API hỗ trợ khác
+Phim Lẻ:
+  https://ophim1.com/v1/api/danh-sach/phim-le
+Phim Bộ:
+  https://ophim1.com/v1/api/danh-sach/phim-bo
+Hoạt Hình:
+  https://ophim1.com/v1/api/danh-sach/hoat-hinh
+TV Shows:
+  https://ophim1.com/v1/api/danh-sach/tv-shows
+
+https://ophim1.com/v1/api/danh-sach/${slug}?page=${page}
+https://ophim1.com/v1/api/the-loai/${slug}?page=${page}
+https://ophim1.com/v1/api/quoc-gia/${slug}?page=${page}
+Bạn có thể sử dụng 'page' để xem đúng số trang trả kết quả mà bạn mong muốn. Bỏ trống tự động sẽ là ở trang 1.
+Bạn có thể sử dụng 'limit' để giới hạn kết quả được trả về nếu nó quá lớn. Bỏ trống tự động sẽ là 10 kết quả.
+Thông tin: Với các API sau đây, bạn sẽ có thể lấy được danh sách phim cố định định dạng mà bạn muốn sử dụng.
+
+Tìm kiếm phim theo từ khóa:
+https://ophim1.com/v1/api/tim-kiem?keyword={Từ khóa}&limit={number}
+https://phimapi.com/v1/api/tim-kiem?keyword={Từ khóa}&limit={number}
+Bạn có thể sử dụng 'limit' để giới hạn kết quả được trả về nếu nó quá lớn. Bỏ trống tự động sẽ là 100 kết quả.
+Thông tin: Đối với API này, cho phép bạn sử dụng một từ khóa bất kỳ để tìm kiếm một phim theo yêu cầu của bạn.
