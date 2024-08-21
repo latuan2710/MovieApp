@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./Home";
 import SearchScreen from "./Search";
+import FavoritesScreen from "./Favorites";
 
 const Tab = createBottomTabNavigator();
 
@@ -16,8 +17,9 @@ export default function TabScreen() {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Search") {
             iconName = "search";
+          } else if (route.name === "Favorite") {
+            iconName = focused ? "star" : "star-outline";
           }
-
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarInactiveTintColor: "white",
@@ -36,6 +38,11 @@ export default function TabScreen() {
       <Tab.Screen
         name="Search"
         component={SearchScreen}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Favorite"
+        component={FavoritesScreen}
         options={{ headerShown: false }}
       />
     </Tab.Navigator>

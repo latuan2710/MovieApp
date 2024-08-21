@@ -15,23 +15,23 @@ const { width, height } = Dimensions.get("screen");
 const slides = [
   {
     text: "All your favourite MARVEL Movies & Series at one place",
-    image: require("@assets/welcome/Image (1).png"),
+    image: require("@assets/images/welcome/Image (1).png"),
   },
   {
     text: "Watch Online or Download Offline",
-    image: require("@assets/welcome/Image (2).png"),
+    image: require("@assets/images/welcome/Image (2).png"),
   },
   {
     text: "Create profiles for different members & get personalised recommendations",
-    image: require("@assets/welcome/Image (3).png"),
+    image: require("@assets/images/welcome/Image (3).png"),
   },
   {
     text: "Plans according to your needs at affordable prices",
-    image: require("@assets/welcome/Image (4).png"),
+    image: require("@assets/images/welcome/Image (4).png"),
   },
   {
     text: "Let's Get Started !!!",
-    image: require("@assets/welcome/Image (5).png"),
+    image: require("@assets/images/welcome/Image (5).png"),
   },
 ];
 

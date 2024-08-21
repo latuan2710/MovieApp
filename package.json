@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
@@ -19,6 +20,7 @@
     "expo-screen-orientation": "~7.0.5",
     "expo-status-bar": "~1.12.1",
     "expo-video": "^1.2.4",
+    "expo-video-thumbnails": "~8.0.0",
     "movieapp": "file:",
     "react": "18.2.0",
     "react-native": "0.74.5",
@@ -28,6 +30,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@react-native-community/cli": "^14.0.1",
     "@types/react": "~18.2.45",
     "typescript": "^5.1.3"
   },

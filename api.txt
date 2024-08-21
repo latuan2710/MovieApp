@@ -23,6 +23,5 @@ Thông tin: Với các API sau đây, bạn sẽ có thể lấy được danh s
 
 Tìm kiếm phim theo từ khóa:
 https://ophim1.com/v1/api/tim-kiem?keyword={Từ khóa}&limit={number}
-https://phimapi.com/v1/api/tim-kiem?keyword={Từ khóa}&limit={number}
 Bạn có thể sử dụng 'limit' để giới hạn kết quả được trả về nếu nó quá lớn. Bỏ trống tự động sẽ là 100 kết quả.
 Thông tin: Đối với API này, cho phép bạn sử dụng một từ khóa bất kỳ để tìm kiếm một phim theo yêu cầu của bạn.

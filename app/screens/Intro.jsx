@@ -8,7 +8,7 @@ export default function IntroScreen() {
 
   return (
     <Video
-      source={require("@assets/intro.mp4")}
+      source={require("@assets/videos/intro.mp4")}
       style={{ width: width, height: height }}
       useNativeControls={false}
       resizeMode={ResizeMode.COVER}

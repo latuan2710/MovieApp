@@ -1,13 +1,15 @@
 import Screen from "@components/Screen";
 import VideoPlayerScreen from "@components/VideoPlayer";
-import { Entypo } from "@expo/vector-icons";
+import useFetchFilm from "@hooks/useFetchFilm";
+import useWatchlist from "@hooks/useWatchlist";
+import { Entypo, Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
+  Image,
   ImageBackground,
   ScrollView,
   StyleSheet,
@@ -17,34 +19,28 @@ import {
 } from "react-native";
 
 export default function DetailScreen() {
-  const [loading, setLoading] = useState(false);
-  const [film, setFilm] = useState(null);
-  const [episodes, setEpisodes] = useState([]);
   const navigation = useNavigation();
   const route = useRoute();
+  const { slug } = route.params;
 
-  const fetchFilm = async () => {
-    if (loading) return;
+  const { addToWatchlist, removeFromWatchlist, isContainMovie } =
+    useWatchlist();
+  const { data, loading } = useFetchFilm(slug);
 
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `https://ophim1.com/phim/${route.params.slug}`
-      );
-      const data = response.data;
+  const [activeTab, setActiveTab] = useState(0);
+  // const [episodes, setEpisodes] = useState([]);
+  const [film, setFilm] = useState(null);
 
-      setFilm(data.movie);
-      setEpisodes(data.episodes);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
+  const handleTabPress = (index) => {
+    setActiveTab(index);
   };
 
   useEffect(() => {
-    fetchFilm();
-  }, []);
+    if (data) {
+      setFilm(data.movie);
+      // setEpisodes(data.episodes);
+    }
+  }, [data]);
 
   if (loading) {
     return (
@@ -56,16 +52,20 @@ export default function DetailScreen() {
     );
   }
 
-  if (!film) {
+  if (!data || !film) {
     return (
-      <View style={styles.centered}>
-        <Text style={styles.text}>No film data available</Text>
-      </View>
+      <Screen>
+        <View style={styles.centered}>
+          <Text style={styles.text}>No film data available</Text>
+        </View>
+      </Screen>
     );
   }
 
+  const tabs = ["Trailer", "Cast"];
+
   return (
-    <Screen>
+    <View style={{ flex: 1, backgroundColor: "black" }}>
       <ScrollView>
         <View style={styles.imageContainer}>
           <ImageBackground
@@ -97,21 +97,77 @@ export default function DetailScreen() {
             <TouchableOpacity style={styles.downloadButton}>
               <Text style={styles.text}>Download</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={styles.text}>+ Add to Watchlist</Text>
-            </TouchableOpacity>
+            {isContainMovie(film.slug) ? (
+              <TouchableOpacity
+                onPress={async () => await removeFromWatchlist(film.slug)}
+              >
+                <Ionicons name="star" size={24} color="#ff0" />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                onPress={async () => await addToWatchlist(film.slug)}
+              >
+                <Ionicons name="star-outline" size={24} color="#fff" />
+              </TouchableOpacity>
+            )}
           </View>
           <View style={styles.descriptionContainer}>
             <Text style={styles.text}>{film.content}</Text>
           </View>
         </View>
         <View>
-          <VideoPlayerScreen />
+          <View style={styles.tabContainer}>
+            {tabs.map((text, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.tab,
+                  activeTab === index && styles.activeTabText,
+                  index !== 0
+                    ? {
+                        borderLeftColor: "rgba(255, 255, 255, 0.25)",
+                        borderLeftWidth: 1,
+                      }
+                    : {},
+                ]}
+                onPress={() => handleTabPress(index)}
+              >
+                <Text style={[styles.tabText, styles.text]}>{text}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <View style={styles.tabContent}>
+            {activeTab === 0 && <VideoPlayerScreen />}
+            {activeTab === 1 && <CastTabContent actors={data.movie.actor} />}
+          </View>
         </View>
       </ScrollView>
-    </Screen>
+    </View>
   );
 }
+
+const CastTabContent = ({ actors }) => {
+  return (
+    <View style={{ flexDirection: "column", gap: 10 }}>
+      {actors.map((actorName, index) => (
+        <View
+          key={index}
+          style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+        >
+          <Image
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: 50,
+            }}
+            source={require("@assets/images/actor.jpg")}
+          />
+          <Text style={styles.text}>{actorName}</Text>
+        </View>
+      ))}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   centered: {
@@ -136,7 +192,7 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     marginTop: "-30%",
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
   },
   actionsContainer: {
     marginTop: 20,
@@ -153,6 +209,26 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     marginTop: 10,
+  },
+  tabContainer: {
+    flexDirection: "row",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 5,
+  },
+  activeTabText: {
+    borderBottomColor: "#ED1B24",
+    borderBottomWidth: 3,
+  },
+  tabText: {
+    textAlign: "center",
+    fontWeight: "700",
+  },
+  tabContent: {
+    paddingHorizontal: 15,
+    paddingVertical: 20,
   },
   text: {
     color: "white",
