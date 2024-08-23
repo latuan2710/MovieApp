@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from "react";
-import { Text, View, FlatList, RefreshControl, StyleSheet } from "react-native";
+import MovieItem from "@components/MovieItem";
 import Screen from "@components/Screen";
 import useWatchlist from "hooks/useWatchlist";
+import React, { useCallback, useState } from "react";
+import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
 
 export default function FavoritesScreen() {
   const { watchlist, loadWatchlist } = useWatchlist();
@@ -13,17 +14,18 @@ export default function FavoritesScreen() {
     setRefreshing(false);
   }, [loadWatchlist]);
 
-  const renderItem = ({ item }) => <Text style={styles.itemText}>{item}</Text>;
-
   return (
     <Screen>
       <FlatList
+        numColumns={3}
         data={watchlist}
         keyExtractor={(item) => item}
-        renderItem={renderItem}
-        contentContainerStyle={styles.contentContainer}
+        renderItem={({ item }) => <MovieItem slug={item} />}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        contentContainerStyle={
+          watchlist.length === 0 && styles.contentContainer
         }
         ListEmptyComponent={
           <Text style={styles.itemText}>No items in your watchlist</Text>
@@ -42,6 +44,5 @@ const styles = StyleSheet.create({
   itemText: {
     color: "white",
     fontSize: 16,
-    marginVertical: 8,
   },
 });

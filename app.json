@@ -19,7 +19,7 @@
         "foregroundImage": "./app/assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.tuan.tuan"
+      "package": "com.latuan2710.MovieApp"
     },
     "web": {
       "favicon": "./app/assets/images/favicon.png"

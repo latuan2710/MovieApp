@@ -1,10 +1,6 @@
-import VideoPlayerScreen from "@components/VideoPlayer";
-import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import DetailScreen from "@screens/Detail";
-import IntroScreen from "@screens/Intro";
-import TabScreen from "@screens/TabScreen";
-import WelcomeScreen from "@screens/Welcome";
+import { NavigationContainer } from "@react-navigation/native";
+import { screenRoutes } from "@routes/ScreenRoutes";
 import { StatusBar } from "expo-status-bar";
 
 const Stack = createNativeStackNavigator();
@@ -14,39 +10,14 @@ export default function App() {
     <NavigationContainer>
       <StatusBar style={"light"} />
       <Stack.Navigator>
-        <Stack.Screen
-          name="Intro"
-          component={IntroScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Welcome"
-          component={WelcomeScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Tabs"
-          component={TabScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Video Player"
-          component={VideoPlayerScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Detail"
-          component={DetailScreen}
-          options={{
-            headerTransparent: true,
-            headerTintColor: "white",
-            headerTitle: "",
-          }}
-        />
+        {screenRoutes.map((screen, index) => (
+          <Stack.Screen
+            key={index}
+            name={screen.name}
+            component={screen.component}
+            options={screen.option}
+          />
+        ))}
       </Stack.Navigator>
     </NavigationContainer>
   );

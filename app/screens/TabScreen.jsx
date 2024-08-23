@@ -1,8 +1,6 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import HomeScreen from "./Home";
-import SearchScreen from "./Search";
-import FavoritesScreen from "./Favorites";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { tabRoutes } from "@routes/TabRoutes";
 
 const Tab = createBottomTabNavigator();
 
@@ -30,21 +28,14 @@ export default function TabScreen() {
         tabBarShowLabel: false,
       })}
     >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name="Search"
-        component={SearchScreen}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name="Favorite"
-        component={FavoritesScreen}
-        options={{ headerShown: false }}
-      />
+      {tabRoutes.map((tab, index) => (
+        <Tab.Screen
+          key={index}
+          name={tab.name}
+          component={tab.component}
+          options={{ headerShown: false }} 
+        />
+      ))}
     </Tab.Navigator>
   );
 }

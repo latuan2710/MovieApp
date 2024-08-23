@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 const useFetchFilm = (slug) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  console.log(`fetch ${slug}`);
 
   useEffect(() => {
     if (!slug) return;
