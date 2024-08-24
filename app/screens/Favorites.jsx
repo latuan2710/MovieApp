@@ -2,7 +2,7 @@ import MovieItem from "@components/MovieItem";
 import Screen from "@components/Screen";
 import useWatchlist from "hooks/useWatchlist";
 import React, { useCallback, useState } from "react";
-import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { FlatList, RefreshControl, StyleSheet, Text } from "react-native";
 
 export default function FavoritesScreen() {
   const { watchlist, loadWatchlist } = useWatchlist();

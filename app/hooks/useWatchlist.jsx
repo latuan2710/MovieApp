@@ -25,6 +25,7 @@ const useWatchlist = () => {
       console.log("Error loading watchlist:", error);
     }
   };
+  console.log("watchlist reander");
 
   const addToWatchlist = async (movie) => {
     try {
@@ -34,6 +35,7 @@ const useWatchlist = () => {
 
       const updatedWatchlist = [...watchlist, movie];
       setWatchlist(updatedWatchlist);
+
       await AsyncStorage.setItem(
         WATCHLIST_KEY,
         JSON.stringify(updatedWatchlist)

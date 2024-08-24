@@ -2,17 +2,18 @@ import Screen from "@components/Screen";
 import VideoPlayer from "@components/VideoPlayer";
 import { MaterialIcons } from "@expo/vector-icons";
 import useFetchFilm from "@hooks/useFetchFilm";
+
+import useHistory from "@hooks/useHistory";
 import useWatchlist from "@hooks/useWatchlist";
 import { useRoute } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  Dimensions,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
 export default function DetailScreen() {
@@ -23,9 +24,14 @@ export default function DetailScreen() {
     useWatchlist();
   const { data, loading } = useFetchFilm(slug);
 
-  const [episodes, setEpisodes] = useState([]);
+  const { addToHistory, getHistoryBySlug } = useHistory();
+
+  const positionRef = useRef(0);
+  const indexRef = useRef(0);
+  const episodes = useRef([]);
+  const film = useRef({});
+
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [film, setFilm] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleText = () => {
@@ -34,10 +40,28 @@ export default function DetailScreen() {
 
   useEffect(() => {
     if (data) {
-      setFilm(data.movie);
-      setEpisodes(data.episodes[0].server_data);
+      film.current = data.movie;
+      episodes.current = data.episodes[0].server_data;
     }
   }, [data]);
+
+  useEffect(() => {
+    indexRef.current = currentIndex;
+  }, [currentIndex]);
+
+  useEffect(() => {
+    let movieHistory = getHistoryBySlug(slug);
+    console.log("movieHistory", movieHistory);
+    // setCurrentIndex(movieHistory);
+
+    return async () => {
+      await addToHistory({
+        slug: slug,
+        eps: indexRef.current,
+        position: positionRef.current,
+      });
+    };
+  }, []);
 
   if (loading) {
     return (
@@ -49,7 +73,7 @@ export default function DetailScreen() {
     );
   }
 
-  if (!data || !film) {
+  if (!data || !film.current) {
     return (
       <Screen>
         <View style={styles.centered}>
@@ -62,27 +86,37 @@ export default function DetailScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: "black" }}>
       <ScrollView>
-        <VideoPlayer videoLink={episodes[currentIndex].link_m3u8} />
+        <VideoPlayer
+          videoLink={episodes.current[currentIndex].link_m3u8}
+          totalEps={episodes.current.length}
+          currentIndex={currentIndex}
+          setCurrentIndex={setCurrentIndex}
+          positionRef={positionRef}
+        />
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View>
             <View style={styles.section}>
               <Text style={styles.title}>
-                {`${film.name} - Episode ${currentIndex + 1}`}
+                {`${film.current.name} - Episode ${currentIndex + 1}`}
               </Text>
             </View>
             <View style={styles.section}>
               <Text style={styles.greyText}>
-                {`${episodes.length}/${film.episode_total}`}
+                {`${episodes.current.length}/${film.current.episode_total}`}
               </Text>
             </View>
           </View>
-          <View>
-            {isContainMovie(film.slug) ? (
-              <TouchableOpacity onPress={() => removeFromWatchlist(film.slug)}>
+          <View style={{ width: 30 }}>
+            {isContainMovie(film.current.slug) ? (
+              <TouchableOpacity
+                onPress={() => removeFromWatchlist(film.current.slug)}
+              >
                 <MaterialIcons name={"star"} size={30} color="#ff0" />
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity onPress={() => addToWatchlist(film.slug)}>
+              <TouchableOpacity
+                onPress={() => addToWatchlist(film.current.slug)}
+              >
                 <MaterialIcons name={"star-outline"} size={30} color="#fff" />
               </TouchableOpacity>
             )}
@@ -95,7 +129,7 @@ export default function DetailScreen() {
               numberOfLines={isExpanded ? undefined : 3}
               ellipsizeMode="tail"
             >
-              {film.content}
+              {film.current.content}
             </Text>
           </TouchableOpacity>
         </View>
@@ -103,20 +137,20 @@ export default function DetailScreen() {
           <View style={{ flexDirection: "row" }}>
             <Text style={styles.greyText}>Category: </Text>
             <Text style={styles.greyText}>
-              {film.category.map((ele) => ele.name).join(", ")}
+              {film.current.category.map((ele) => ele.name).join(", ")}
             </Text>
           </View>
           <View style={{ flexDirection: "row" }}>
             <Text style={styles.greyText}>Actors: </Text>
-            <Text style={styles.greyText}>{film.actor.join(", ")}</Text>
+            <Text style={styles.greyText}>{film.current.actor.join(", ")}</Text>
           </View>
           <View style={{ flexDirection: "row" }}>
             <Text style={styles.greyText}>Director: </Text>
-            <Text style={styles.greyText}>{film.director[0]}</Text>
+            <Text style={styles.greyText}>{film.current.director[0]}</Text>
           </View>
           <View style={{ flexDirection: "row" }}>
             <Text style={styles.greyText}>Country: </Text>
-            <Text style={styles.greyText}>{film.country[0].name}</Text>
+            <Text style={styles.greyText}>{film.current.country[0].name}</Text>
           </View>
         </View>
         <View style={styles.section}>
@@ -135,8 +169,13 @@ export default function DetailScreen() {
               Episodes
             </Text>
           </View>
-          <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-            {episodes.map((_, index) => (
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+            }}
+          >
+            {episodes.current.map((_, index) => (
               <TouchableOpacity
                 key={index}
                 onPress={() => setCurrentIndex(index)}
@@ -154,7 +193,6 @@ export default function DetailScreen() {
     </View>
   );
 }
-const { width } = Dimensions.get("screen");
 const styles = StyleSheet.create({
   centered: {
     flex: 1,
@@ -179,8 +217,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   button: {
-    width: width / 9,
-    height: width / 9,
+    width: 45,
+    height: 45,
     margin: 5,
     justifyContent: "center",
     alignItems: "center",

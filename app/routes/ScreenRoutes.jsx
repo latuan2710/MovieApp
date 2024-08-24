@@ -1,4 +1,3 @@
-import VideoPlayer from "@components/VideoPlayer";
 import DetailScreen from "@screens/Detail";
 import IntroScreen from "@screens/Intro";
 import TabScreen from "@screens/TabScreen";
