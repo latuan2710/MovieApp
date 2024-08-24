@@ -11,9 +11,9 @@ const useHistory = () => {
     const loadHistory = async () => {
       try {
         const storedHistory = await AsyncStorage.getItem(HISTORY_KEY);
-        console.log("load ", storedHistory ? JSON.parse(storedHistory) : []);
+        console.log("load ", storedHistory);
 
-        setHistory(storedHistory ? JSON.parse(storedHistory) : []);
+        setHistory(storedHistory ? JSON.parse(storedHistory) : history);
       } catch (error) {
         console.log("Error loading History:", error);
         setHistory([]);
@@ -32,9 +32,10 @@ const useHistory = () => {
 
   const addToHistory = async (movie) => {
     try {
-      let updatedHistory = [
-        { eps: 0, position: 77654, slug: "khong-khuat-phuc" },
-      ];
+      let updatedHistory = [...history];
+      // let updatedHistory = [
+      //   { eps: 0, position: 77654, slug: "khong-khuat-phuc" },
+      // ];
 
       console.log("updatedHistory", updatedHistory);
       let itemHistory = updatedHistory.find((item) => item.slug === movie.slug);

@@ -25,8 +25,7 @@ const useWatchlist = () => {
       console.log("Error loading watchlist:", error);
     }
   };
-  console.log("watchlist reander");
-
+  
   const addToWatchlist = async (movie) => {
     try {
       if (isContainMovie(movie)) {
